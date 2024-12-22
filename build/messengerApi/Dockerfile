@@ -2,11 +2,18 @@
 
 FROM golang:1.23-alpine AS builder
 
+RUN apk add --no-cache git
+
 WORKDIR /app
+
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
+
+RUN swag init -g ./cmd/messengerApi.go -o ./docs/messengerApi -instanceName messengerApi --exclude ./internal/apps/jobScheduler
 
 RUN go build -o insider ./main.go
 
@@ -18,5 +25,8 @@ COPY --from=builder /app/insider .
 
 COPY --from=builder /app/configs ./configs
 
+COPY --from=builder /app/docs/messengerApi /docs/messengerApi
+
 EXPOSE 3000
+
 CMD ["./insider", "messengerApi"]

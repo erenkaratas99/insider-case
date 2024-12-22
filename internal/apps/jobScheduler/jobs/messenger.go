@@ -113,6 +113,9 @@ func (mj *MessengerJob) IsRunning() bool {
 }
 
 func (mj *MessengerJob) doJob(ctx context.Context) {
+	if err := mj.runIteration(); err != nil {
+		log.Errorf("MessengerJob: Initial iteration failed: %v", err)
+	}
 
 	for {
 		select {
@@ -122,69 +125,77 @@ func (mj *MessengerJob) doJob(ctx context.Context) {
 
 		case <-mj.ticker.C:
 			log.Println("MessengerJob: Starting iteration...")
-
-			jobInfo, err := mj.jsRepo.GetJob(mj.jobID)
-			if err != nil {
-				log.Errorf("Could not retrieve job info for jobID %s: %v", mj.jobID, err)
-				continue
+			if err := mj.runIteration(); err != nil {
+				log.Errorf("MessengerJob: Iteration failed: %v", err)
 			}
-
-			offsetVal, ok := jobInfo.Params["last_offset"]
-			if !ok {
-				log.Warn("last_offset not found in job params, using 0")
-				offsetVal = 0
-			}
-
-			lastOffset, err := pkg.ToInt(offsetVal)
-			if err != nil {
-				log.Errorf("Invalid last_offset in job metadata: %v, defaulting to 0", err)
-				lastOffset = 0
-			}
-
-			body, err := mj.messengerClient.GetTwoPendingMessages(strconv.Itoa(lastOffset + 2))
-			if err != nil {
-				log.Errorf("Failed to get pending messages: %v", err)
-				continue
-			}
-
-			messengerResponse := new(entities.MessengerClientResponse)
-			if err := json.Unmarshal(body, &messengerResponse); err != nil {
-				log.Errorf("Failed to unmarshal messenger response: %v", err)
-				continue
-			}
-
-			if len(messengerResponse.Data) == 0 {
-				log.Println("No new messages to process.")
-				continue
-			}
-
-			for _, msg := range messengerResponse.Data {
-				message := map[string]interface{}{
-					"to":      msg.To,
-					"content": msg.Content,
-				}
-
-				if err := mj.webhookClient.SendMessage(message); err != nil {
-					log.Errorf("Error sending message (ID=%s): %v", msg.ID, err)
-					continue
-				}
-
-				if err := mj.messengerClient.CommitMessageAsSent(msg.ID); err != nil {
-					log.Errorf("Error committing message as sent (ID=%s): %v", msg.ID, err)
-					continue
-				}
-			}
-
-			newOffset := lastOffset + len(messengerResponse.Data)
-
-			err = mj.jsRepo.UpdateJob(mj.jobID, map[string]interface{}{
-				"last_offset": newOffset,
-			})
-			if err != nil {
-				log.Errorf("Failed to update last_offset in DB: %v", err)
-			}
-
-			log.Printf("MessengerJob: iteration finished. Updated last_offset to %d\n", newOffset)
 		}
 	}
+}
+
+// runIteration encapsulates the job's iteration logic
+func (mj *MessengerJob) runIteration() error {
+	jobInfo, err := mj.jsRepo.GetJob(mj.jobID)
+	if err != nil {
+		log.Errorf("Could not retrieve job info for jobID %s: %v", mj.jobID, err)
+		return err
+	}
+
+	offsetVal, ok := jobInfo.Params["last_offset"]
+	if !ok {
+		log.Warn("last_offset not found in job params, using 0")
+		offsetVal = 0
+	}
+
+	lastOffset, err := pkg.ToInt(offsetVal)
+	if err != nil {
+		log.Errorf("Invalid last_offset in job metadata: %v, defaulting to 0", err)
+		lastOffset = 0
+	}
+
+	body, err := mj.messengerClient.GetTwoPendingMessages(strconv.Itoa(lastOffset + 2))
+	if err != nil {
+		log.Errorf("Failed to get pending messages: %v", err)
+		return err
+	}
+
+	messengerResponse := new(entities.MessengerClientResponse)
+	if err := json.Unmarshal(body, &messengerResponse); err != nil {
+		log.Errorf("Failed to unmarshal messenger response: %v", err)
+		return err
+	}
+
+	if len(messengerResponse.Data) == 0 {
+		log.Println("No new messages to process.")
+		return nil
+	}
+
+	for _, msg := range messengerResponse.Data {
+		message := map[string]interface{}{
+			"to":      msg.To,
+			"content": msg.Content,
+		}
+
+		if err := mj.webhookClient.SendMessage(message); err != nil {
+			log.Errorf("Error sending message (ID=%s): %v", msg.ID, err)
+			continue
+		}
+
+		if err := mj.messengerClient.CommitMessageAsSent(msg.ID); err != nil {
+			log.Errorf("Error committing message as sent (ID=%s): %v", msg.ID, err)
+			continue
+		}
+	}
+
+	newOffset := lastOffset + len(messengerResponse.Data)
+
+	err = mj.jsRepo.UpdateJob(mj.jobID, map[string]interface{}{
+		"last_offset": newOffset,
+	})
+	if err != nil {
+		log.Errorf("Failed to update last_offset in DB: %v", err)
+		return err
+	}
+
+	log.Printf("MessengerJob: iteration finished. Updated last_offset to %d\n", newOffset)
+	return nil
 }

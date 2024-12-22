@@ -1,0 +1,77 @@
+basePath: /job-scheduler
+definitions:
+  pkg.BaseResponse:
+    properties:
+      data: {}
+      internalCode:
+        type: integer
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+host: localhost:3001
+info:
+  contact: {}
+  description: This is the API documentation for the Job Scheduler service.
+  title: Job Scheduler
+  version: "1.0"
+paths:
+  /messenger/is-working:
+    get:
+      consumes:
+      - application/json
+      description: Checks whether the Messenger Job is currently running.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current job status
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Check Messenger Job Status
+      tags:
+      - MessengerJob
+  /messenger/start:
+    get:
+      consumes:
+      - application/json
+      description: Initiates the Messenger Job and returns the operation status.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Start Messenger Job
+      tags:
+      - MessengerJob
+  /messenger/stop:
+    get:
+      consumes:
+      - application/json
+      description: Terminates the Messenger Job and returns the operation status.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Stop Messenger Job
+      tags:
+      - MessengerJob
+swagger: "2.0"

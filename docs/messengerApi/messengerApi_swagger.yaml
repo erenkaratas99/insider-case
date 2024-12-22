@@ -1,0 +1,151 @@
+basePath: /api/messenger
+definitions:
+  pkg.BaseResponse:
+    properties:
+      data: {}
+      internalCode:
+        type: integer
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: This is the documentation for the Messenger API.
+  title: Messenger API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all messenger messages with pagination.
+      parameters:
+      - description: Number of items to retrieve
+        in: query
+        minimum: 1
+        name: limit
+        required: true
+        type: integer
+      - description: Number of items to skip
+        in: query
+        minimum: 0
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of messages under field of 'data'
+          schema:
+            items:
+              $ref: '#/definitions/pkg.BaseResponse'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Get All Messages
+      tags:
+      - MessengerAPI
+  /commit/{messageId}:
+    put:
+      consumes:
+      - application/json
+      description: Commits a messenger message based on the provided message ID, if
+        success, changes the message status to sent.
+      parameters:
+      - description: ID of the message to commit
+        in: path
+        name: messageId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Message committed successfully
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "400":
+          description: Invalid message ID
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Commit a Message
+      tags:
+      - MessengerAPI
+  /get-two:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves two messenger messages based on the provided offset,
+        tailored for the Messenger Job.
+      parameters:
+      - description: Offset for retrieving messages
+        in: query
+        minimum: -1
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of two messages, projection of 'to' and 'content'
+          schema:
+            items:
+              $ref: '#/definitions/pkg.BaseResponse'
+            type: array
+        "400":
+          description: Invalid query parameter
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Get Two Messages for Messenger Job
+      tags:
+      - MessengerAPI
+  /messenger-job-toggle:
+    get:
+      consumes:
+      - application/json
+      description: Starts or stops the Messenger Job based on the provided command
+        by sending http requests to the job scheduler.
+      parameters:
+      - description: Command to toggle job. Use 'start' or 'stop'
+        in: query
+        name: command
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Job toggled successfully
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "400":
+          description: Invalid command parameter
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/pkg.BaseResponse'
+      summary: Toggle Messenger Job
+      tags:
+      - MessengerAPI
+swagger: "2.0"

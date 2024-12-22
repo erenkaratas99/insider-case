@@ -34,6 +34,16 @@ func (h *Handler) RegisterRoutes(prefix string) {
 	g.PUT("/commit/:messageId", h.Commit)
 }
 
+// @Summary Toggle Messenger Job
+// @Description Starts or stops the Messenger Job based on the provided command by sending http requests to the job scheduler.
+// @Tags MessengerAPI
+// @Accept  json
+// @Produce  json
+// @Param command query string true "Command to toggle job. Use 'start' or 'stop'"
+// @Success 200 {object} pkg.BaseResponse "Job toggled successfully"
+// @Failure 400 {object} pkg.BaseResponse "Invalid command parameter"
+// @Failure 500 {object} pkg.BaseResponse "Internal server error"
+// @Router /messenger-job-toggle [get]
 func (h *Handler) ToggleMessengerJob(c echo.Context) error {
 	command := c.QueryParam("command")
 
@@ -53,6 +63,17 @@ func (h *Handler) ToggleMessengerJob(c echo.Context) error {
 	return pkg.NewSuccessResponse().JSON(c)
 }
 
+// @Summary Get All Messages
+// @Description Retrieves all messenger messages with pagination.
+// @Tags MessengerAPI
+// @Accept  json
+// @Produce  json
+// @Param limit query integer true "Number of items to retrieve" minimum(1)
+// @Param offset query integer true "Number of items to skip" minimum(0)
+// @Success 200 {array} pkg.BaseResponse "List of messages under field of 'data'"
+// @Failure 400 {object} pkg.BaseResponse "Invalid query parameters"
+// @Failure 500 {object} pkg.BaseResponse "Internal server error"
+// @Router / [get]
 func (h *Handler) GetAll(c echo.Context) error {
 
 	limit, offset := c.QueryParam("limit"), c.QueryParam("offset")
@@ -82,6 +103,16 @@ func (h *Handler) GetAll(c echo.Context) error {
 	return messages.JSON(c)
 }
 
+// @Summary Get Two Messages for Messenger Job
+// @Description Retrieves two messenger messages based on the provided offset, tailored for the Messenger Job.
+// @Tags MessengerAPI
+// @Accept  json
+// @Produce  json
+// @Param offset query integer true "Offset for retrieving messages" minimum(-1)
+// @Success 200 {array} pkg.BaseResponse "List of two messages, projection of 'to' and 'content'"
+// @Failure 400 {object} pkg.BaseResponse "Invalid query parameter"
+// @Failure 500 {object} pkg.BaseResponse "Internal server error"
+// @Router /get-two [get]
 func (h *Handler) GetTwo(c echo.Context) error {
 	offset := c.QueryParam("offset")
 
@@ -101,6 +132,16 @@ func (h *Handler) GetTwo(c echo.Context) error {
 	return messages.JSON(c)
 }
 
+// @Summary Commit a Message
+// @Description Commits a messenger message based on the provided message ID, if success, changes the message status to sent.
+// @Tags MessengerAPI
+// @Accept  json
+// @Produce  json
+// @Param messageId path string true "ID of the message to commit"
+// @Success 200 {object} pkg.BaseResponse "Message committed successfully"
+// @Failure 400 {object} pkg.BaseResponse "Invalid message ID"
+// @Failure 500 {object} pkg.BaseResponse "Internal server error"
+// @Router /commit/{messageId} [put]
 func (h *Handler) Commit(c echo.Context) error {
 	messageId := c.Param("messageId")
 	if messageId == "" {
