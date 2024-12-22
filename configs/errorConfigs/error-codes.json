@@ -1,0 +1,7 @@
+{
+    "messenger_job_already_working" : 400001,
+    "messenger_job_already_stopped" : 400002,
+
+    "job_couldnt_created" : 500001,
+    "job_couldnt_updated" : 500002
+}

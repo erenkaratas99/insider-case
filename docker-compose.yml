@@ -1,0 +1,72 @@
+version: "3.9"
+services:
+  messengerApi:
+    build:
+      context: .
+      dockerfile: build/messengerApi/Dockerfile
+    image: insider-messengerapi:latest
+    container_name: messenger-api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - ENV=${ENV:-test}
+      - MONGO_HOST=mongo
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - REDIS_HOST=redis
+    networks:
+      - app-network
+
+  jobScheduler:
+    build:
+      context: .
+      dockerfile: build/jobScheduler/Dockerfile
+    image: insider-jobscheduler:latest
+    container_name: job-scheduler
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - ENV=${ENV:-test}
+      - MONGO_HOST=mongo
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - REDIS_HOST=redis
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: admin
+    volumes:
+      - mongo_data:/data/db
+    command: [ "--bind_ip", "0.0.0.0" ]
+    networks:
+      - app-network
+
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+volumes:
+  mongo_data:
+
+networks:
+  app-network:
+    driver: bridge
