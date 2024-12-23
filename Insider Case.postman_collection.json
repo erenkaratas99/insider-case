@@ -1,0 +1,189 @@
+{
+	"info": {
+		"_postman_id": "c4a8d6ef-123e-4531-bae8-801a02614691",
+		"name": "Insider Case",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40594468"
+	},
+	"item": [
+		{
+			"name": "Messenger API",
+			"item": [
+				{
+					"name": "messengerAPI togglejob",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/messenger/messenger-job-toggle?command=start",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"messenger",
+								"messenger-job-toggle"
+							],
+							"query": [
+								{
+									"key": "command",
+									"value": "start"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "messengerAPI health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/messenger/health",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"messenger",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "messengerAPI getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/messenger/?limit=4&offset=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"messenger",
+								""
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "4"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "messengerAPI get two",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/messenger/get-two?offset=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"messenger",
+								"get-two"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "messengerApi commit",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job-scheduler",
+			"item": [
+				{
+					"name": "jobScheduler job stop",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3001/job-scheduler/messenger/stop",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"job-scheduler",
+								"messenger",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "jobScheduler job start",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3001/job-scheduler/messenger/start",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"job-scheduler",
+								"messenger",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "jobScheduler is-working",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3001/job-scheduler/messenger/start",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"job-scheduler",
+								"messenger",
+								"start"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
