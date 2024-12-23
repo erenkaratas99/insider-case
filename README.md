@@ -73,11 +73,12 @@ internal/
 |   |   |   |-- messenger.go
 |   |   |-- jobs/
 |   |-- messengerApi/
-|   |   |-- entities/
-|   |   |-- handler.go
-|   |   |-- service.go
-|   |-- clients/
-|   |-- repositories/
+|       |-- entities/
+|       |-- handlers/
+|           |-- handler.go
+|           |-- service.go
+|-- clients/
+|-- repositories/
 pkg/
 ```
 ##### build
