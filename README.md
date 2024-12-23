@@ -143,5 +143,6 @@ stores the project-independent codes, middlewares like logger and utils
 	i. a future work might be a retry mechanism
 7. if success, sends a requests to the messenger API to commit, messenger API sets the incoming message status to sucess
 
-<img width="933" alt="image" src="https://github.com/user-attachments/assets/1d8dcd12-ae7a-498c-bf46-5936862d68fc" />
+<img width="1037" alt="image" src="https://github.com/user-attachments/assets/e8d7fba8-7609-41a1-9ec6-486aeddef2e9" />
+
 
