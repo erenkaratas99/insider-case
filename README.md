@@ -117,7 +117,7 @@ stores the project-independent codes, middlewares like logger and utils
 	takes only offset to for pagination, limit is fixed to 2
 	returns two objects from the database with projection of fields : to, content, id 
 	tailored for the messenger job
-###### the logic behind separating this endpoint from get-all is to overcome larger objects for not to increase payload size by projection**	**the logic behind separating this endpoint from get-all is to overcome larger objects for not to increase payload size by projection
+###### the logic behind separating this endpoint from get-all is to overcome larger objects for not to increase payload size by projection**
 - **/commit/:messageId** (PUT)
 	takes messageId sent by the job, same logic of kafka commit & ack
 	if succes, set a redis key with message Id
