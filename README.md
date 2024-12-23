@@ -1,4 +1,10 @@
 # Insider-Case
+
+## Index
+- [How to run?](https://github.com/erenkaratas99/insider-case/edit/main/README.md#how-to-run "How to run?")
+- [Project Structure](https://github.com/erenkaratas99/insider-case/edit/main/README.md#project-structure "Project Structure")
+- [Project Architecture & Working Principle](https://github.com/erenkaratas99/insider-case/edit/main/README.md#project-architecture "Project Architecture & Working Principle")
+
 ## How to run?
 - clone the project 
 	`git clone https://github.com/erenkaratas99/insider-case.git`
