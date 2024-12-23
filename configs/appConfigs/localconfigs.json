@@ -1,0 +1,23 @@
+{
+  "mongo" : {
+    "connection_uri" :"mongodb://localhost:27017/",
+    "time_out_duration_in_seconds" : 10
+  },
+  "redis" : {
+    "connection_uri" : "127.0.0.1:6379"
+  },
+  "messenger_api" : {
+    "url" : "http://localhost:3000/api",
+    "api_prefix" : "/api",
+    "route_prefix" : "/messenger",
+    "mongo_db_name" : "messenger",
+    "messages_col_name" : "messages"
+  },
+  "job_scheduler" : {
+    "url": "http://localhost:3001",
+    "route_prefix" : "/job-scheduler",
+    "mongo_db_name" : "jobScheduler",
+    "jobs_col_name" : "jobs",
+    "messenger_job_interval_in_seconds" : 120
+  }
+}
