@@ -5,6 +5,7 @@
 - [Project Structure](https://github.com/erenkaratas99/insider-case#project-structure "Project Structure")
 - [Project Architecture & Working Principle](https://github.com/erenkaratas99/insider-case#project-architecture "Project Architecture & Working Principle")
 
+
 ## How to run?
 - clone the project 
 	`git clone https://github.com/erenkaratas99/insider-case.git`
