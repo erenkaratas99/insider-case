@@ -105,7 +105,7 @@ swagger docs
 ##### pkg
 stores the project-independent codes, middlewares like logger and utils
 
-## Project Architecture
+## Project Architecture & Working Principle
 
 #### Messenger API
 4 endpoints;
